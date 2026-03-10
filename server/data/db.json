@@ -1,0 +1,225 @@
+{
+  "users": [
+    {
+      "id": "54133dff-4e73-4641-ac34-35f1e3d390d7",
+      "name": "Test User",
+      "email": "test@test.com",
+      "password": "$2b$10$slYDGrf3qd5w84kHhWYLOeNPSq4i0Oa686E/cij6.5HpnwuNEypu6",
+      "xp": 0,
+      "coins": 0,
+      "streak": 0,
+      "level": 1,
+      "avatar": "default",
+      "lastActiveDate": "2026-03-09",
+      "createdAt": "2026-03-09T12:03:06.703Z"
+    },
+    {
+      "id": "4c1eb948-f8bc-41e7-80f7-94ccfa81aa0e",
+      "name": "Test User",
+      "email": "test2@test.com",
+      "password": "$2b$10$ExL7I8MJ1FhlSYp0j6dW.enPytQBAz7CWFyAjVf5z5rpukTpTp.sS",
+      "xp": 0,
+      "coins": 0,
+      "streak": 0,
+      "level": 1,
+      "avatar": "default",
+      "lastActiveDate": "2026-03-10",
+      "createdAt": "2026-03-10T09:36:26.661Z"
+    },
+    {
+      "id": "11ca30cd-7bd1-4137-a582-1e4a33a5dfc7",
+      "name": "Suraj",
+      "email": "suraj@gmail.com",
+      "password": "$2b$10$Ygv8zzLw1EJRkPY3nPadAOCsgUBH3r/JptadJ8zrz9SMCGlkVp/hC",
+      "xp": 0,
+      "coins": 0,
+      "streak": 0,
+      "level": 1,
+      "avatar": "default",
+      "lastActiveDate": "2026-03-10",
+      "createdAt": "2026-03-10T10:10:58.963Z"
+    },
+    {
+      "id": "fafd1f8f-7256-4ef3-91ef-3d12439978eb",
+      "name": "Suraj",
+      "email": "suraj1@gmail.com",
+      "password": "$2b$10$9oHwkLTXhLHRyNKs6lba5ee6e.d66tG7zFX/T4TtEpMnYlY6wLmuy",
+      "xp": 0,
+      "coins": 0,
+      "streak": 0,
+      "level": 1,
+      "avatar": "default",
+      "lastActiveDate": "2026-03-10",
+      "createdAt": "2026-03-10T10:24:08.823Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "userId": "54133dff-4e73-4641-ac34-35f1e3d390d7",
+      "goal": "Prepare for interview",
+      "status": "active",
+      "createdAt": "2026-03-09T12:03:59.929Z"
+    },
+    {
+      "id": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "userId": "54133dff-4e73-4641-ac34-35f1e3d390d7",
+      "goal": "prepare my software engineering interview",
+      "status": "active",
+      "createdAt": "2026-03-10T09:10:57.273Z"
+    }
+  ],
+  "subtasks": [
+    {
+      "id": "272d8c91-e829-41b2-9eb6-c1bcc5a4cc9d",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Research the company and role online for 5 minutes",
+      "status": "pending",
+      "order": 1
+    },
+    {
+      "id": "dd531be3-fdab-4e91-964a-59ccb73f1239",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Read through the job description and highlight key requirements",
+      "status": "pending",
+      "order": 2
+    },
+    {
+      "id": "af55778b-e091-47c3-8673-1b387bddeb8f",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Write down 3 of your biggest strengths that match the role",
+      "status": "pending",
+      "order": 3
+    },
+    {
+      "id": "8dc8877d-9325-472f-8d62-ac427bdb9952",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Prepare 2 stories using the STAR method for behavioral questions",
+      "status": "pending",
+      "order": 4
+    },
+    {
+      "id": "59300105-d43f-4f80-baf3-ce110a171884",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Practice answering \"Tell me about yourself\" out loud once",
+      "status": "pending",
+      "order": 5
+    },
+    {
+      "id": "851b7e2a-7822-47ba-b77d-5ba277aa8f03",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Look up 3 common technical questions for this role",
+      "status": "pending",
+      "order": 6
+    },
+    {
+      "id": "d0d52ad6-a5e1-48d9-9a13-e40ad75761a7",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Write short bullet-point answers for each question",
+      "status": "pending",
+      "order": 7
+    },
+    {
+      "id": "60301d32-4c46-4957-8506-802948b391de",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Pick out your interview outfit and lay it out",
+      "status": "pending",
+      "order": 8
+    },
+    {
+      "id": "edc778ee-046c-4c4f-8dde-552983b166de",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Pack your bag with resume, notebook, and pen",
+      "status": "pending",
+      "order": 9
+    },
+    {
+      "id": "81b0fdca-5f3a-42e4-b28d-70653df9fe42",
+      "taskId": "0debe97c-cefa-4270-976c-ca40a80a2dce",
+      "title": "Set an alarm for interview day with 30 min buffer",
+      "status": "pending",
+      "order": 10
+    },
+    {
+      "id": "73ec203a-eca4-454e-989b-c79f0a46ce66",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Research the company and role online for 5 minutes",
+      "status": "pending",
+      "order": 1
+    },
+    {
+      "id": "1bc18e41-5f72-4f14-853a-b4c9cf86ddb2",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Read through the job description and highlight key requirements",
+      "status": "pending",
+      "order": 2
+    },
+    {
+      "id": "30fbb854-5b1c-4400-9bbd-93a8a949c1c7",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Write down 3 of your biggest strengths that match the role",
+      "status": "pending",
+      "order": 3
+    },
+    {
+      "id": "836910d9-f3f7-4f0a-9408-22a534f8b6d3",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Prepare 2 stories using the STAR method for behavioral questions",
+      "status": "pending",
+      "order": 4
+    },
+    {
+      "id": "fe5d0882-96f3-4c4d-8b92-a8898c02cfbe",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Practice answering \"Tell me about yourself\" out loud once",
+      "status": "pending",
+      "order": 5
+    },
+    {
+      "id": "c278af19-2da8-4aa0-a751-7ca00ee69a0a",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Look up 3 common technical questions for this role",
+      "status": "pending",
+      "order": 6
+    },
+    {
+      "id": "560036df-94ac-4cfc-8792-5e61aa002444",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Write short bullet-point answers for each question",
+      "status": "pending",
+      "order": 7
+    },
+    {
+      "id": "e6c72dd0-13a3-4382-afa6-00955c03fb6c",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Pick out your interview outfit and lay it out",
+      "status": "pending",
+      "order": 8
+    },
+    {
+      "id": "bfbae0c3-761a-491c-ba92-e7e8e2f9d4ac",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Pack your bag with resume, notebook, and pen",
+      "status": "pending",
+      "order": 9
+    },
+    {
+      "id": "411cdd39-99b8-42b4-870e-346ef6877e4e",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "title": "Set an alarm for interview day with 30 min buffer",
+      "status": "pending",
+      "order": 10
+    }
+  ],
+  "focusSessions": [
+    {
+      "id": "159a2241-04e1-4884-95b5-5fed50b202fc",
+      "userId": "54133dff-4e73-4641-ac34-35f1e3d390d7",
+      "taskId": "3ca8eec8-e7f2-41e5-b258-a46821fbdfd7",
+      "startedAt": "2026-03-10T09:11:01.493Z",
+      "duration": 0,
+      "completed": false
+    }
+  ],
+  "rewards": []
+}
