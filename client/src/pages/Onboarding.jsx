@@ -240,17 +240,35 @@ export default function Onboarding() {
     setError('');
     setLoading(true);
     try {
-      if (!otpStep) {
-        if (!isLogin && !form.name.trim()) { setError('Name is required'); setLoading(false); return; }
-        await sendOtp(form.email);
-        setOtpStep(true);
-      } else {
-        if (isLogin) {
-          await login(form.email, form.password, form.otp);
-        } else {
-          await register(form.name, form.email, form.password, form.otp);
-        }
+      // Intercept admin login on the client login page
+      if (isLogin && form.email === 'support.focusflow@gmail.com') {
+        const res = await fetch('http://localhost:5000/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: form.email, password: form.password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        localStorage.setItem('focusflow_admin_token', data.token);
+        navigate('/admin');
+        setLoading(false);
+        return;
+      }
+
+      if (isLogin) {
+        // Login skips OTP verification
+        await login(form.email, form.password);
         navigate('/dashboard');
+      } else {
+        if (!otpStep) {
+          if (!form.name.trim()) { setError('Name is required'); setLoading(false); return; }
+          await sendOtp(form.email);
+          setOtpStep(true);
+        } else {
+          // Registration uses OTP verification
+          await register(form.name, form.email, form.password, form.otp);
+          navigate('/dashboard');
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -302,10 +320,10 @@ export default function Onboarding() {
                 transform: 'perspective(500px) rotateX(5deg)',
               }}>⚡</motion.div>
             <h1 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: 4 }}>
-              {otpStep ? 'Verify your email' : (isLogin ? 'Welcome back' : 'Create your account')}
+              {otpStep && !isLogin ? 'Verify your email' : (isLogin ? 'Welcome back' : 'Create your account')}
             </h1>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
-              {otpStep ? `Enter the 6-digit code sent to ${form.email}` : (isLogin ? 'Let\'s keep the momentum going 💜' : 'Start your focus journey today ✨')}
+              {otpStep && !isLogin ? `Enter the 6-digit code sent to ${form.email}` : (isLogin ? 'Let\'s keep the momentum going 💜' : 'Start your focus journey today ✨')}
             </p>
           </div>
 
@@ -325,7 +343,7 @@ export default function Onboarding() {
                   onChange={e => setForm({ ...form, name: e.target.value })} />
               </div>
             )}
-            {!otpStep && (
+            {(!otpStep || isLogin) && (
               <>
                 <div style={{ marginBottom: 16 }}>
                   <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Email</label>
@@ -350,7 +368,7 @@ export default function Onboarding() {
               </>
             )}
 
-            {otpStep && (
+            {otpStep && !isLogin && (
               <div style={{ marginBottom: 20 }}>
                 <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Verification Code</label>
                 <input className="input" type="text" placeholder="123456" value={form.otp}

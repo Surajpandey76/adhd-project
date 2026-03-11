@@ -1,16 +1,16 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { readDB, writeDB, generateId } = require('../database');
+const { pool } = require('../database');
 const { JWT_SECRET } = require('../middleware/auth');
 const { sendEmail } = require('../utils/mailer');
 
 const router = express.Router();
 
 // Helper to clean up expired OTPs
-const cleanupOtps = (db) => {
+const cleanupOtps = async () => {
   const now = Date.now();
-  db.otps = db.otps.filter(o => o.expiresAt > now);
+  await pool.query('DELETE FROM otps WHERE expires_at <= $1', [now]);
 };
 
 // POST /api/auth/send-otp
@@ -21,20 +21,17 @@ router.post('/send-otp', async (req, res) => {
 
     const otpData = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digits
     
-    const db = readDB();
-    if (!db.otps) db.otps = [];
-    cleanupOtps(db);
+    await cleanupOtps();
     
     // Remove existing OTP for this email
-    db.otps = db.otps.filter(o => o.email !== email);
+    await pool.query('DELETE FROM otps WHERE email = $1', [email]);
     
     // Add new OTP good for 10 minutes
-    db.otps.push({
-      email,
-      code: otpData,
-      expiresAt: Date.now() + 10 * 60 * 1000,
-    });
-    writeDB(db);
+    const expiresAt = Date.now() + 10 * 60 * 1000;
+    await pool.query(
+      'INSERT INTO otps (email, code, expires_at) VALUES ($1, $2, $3)', 
+      [email, otpData, expiresAt]
+    );
 
     await sendEmail(
       email,
@@ -43,7 +40,6 @@ router.post('/send-otp', async (req, res) => {
       `<h2>FocusFlow Verification</h2><p>Your OTP code is: <strong>${otpData}</strong></p><p>It will expire in 10 minutes.</p>`
     );
     
-    // Just log for ease of testing during dev so we don't have to check ethereal email every time
     console.log(`[OTP] Created OTP ${otpData} for ${email}`);
 
     res.json({ message: 'OTP sent successfully' });
@@ -61,44 +57,41 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Name, email, password, and OTP are required' });
     }
 
-    const db = readDB();
-    if (!db.otps) db.otps = [];
-    cleanupOtps(db);
+    await cleanupOtps();
 
     // Verify OTP
-    const otpRecord = db.otps.find(o => o.email === email && o.code === otp);
-    if (!otpRecord) {
+    const otpResult = await pool.query('SELECT * FROM otps WHERE email = $1 AND code = $2', [email, otp]);
+    if (otpResult.rows.length === 0) {
       return res.status(400).json({ error: 'Invalid or expired OTP' });
     }
 
-    const existing = db.users.find(u => u.email === email);
-    if (existing) {
+    const existingUser = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (existingUser.rows.length > 0) {
       return res.status(409).json({ error: 'Email already registered' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = {
-      id: generateId(),
-      name,
-      email,
-      password: hashedPassword,
-      xp: 0,
-      coins: 0,
-      streak: 0,
-      level: 1,
-      avatar: 'default',
-      lastActiveDate: new Date().toISOString().split('T')[0],
-      createdAt: new Date().toISOString(),
-    };
+    
+    const insertResult = await pool.query(
+      `INSERT INTO users (name, email, password) 
+       VALUES ($1, $2, $3) RETURNING *`,
+      [name, email, hashedPassword]
+    );
 
-    db.users.push(user);
-    db.otps = db.otps.filter(o => o.email !== email);
-    writeDB(db);
+    const user = insertResult.rows[0];
+    await pool.query('DELETE FROM otps WHERE email = $1', [email]);
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
     const { password: _, ...userWithoutPassword } = user;
-    res.status(201).json({ token, user: userWithoutPassword });
+    
+    // Map snake_case to camelCase for frontend
+    const uiUser = { ...userWithoutPassword, lastActiveDate: user.last_active_date, createdAt: user.created_at };
+    delete uiUser.last_active_date;
+    delete uiUser.created_at;
+
+    res.status(201).json({ token, user: uiUser });
   } catch (err) {
+    console.error('Register error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -106,60 +99,77 @@ router.post('/register', async (req, res) => {
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password, otp } = req.body;
-    if (!email || !password || !otp) {
-      return res.status(400).json({ error: 'Email, password, and OTP are required' });
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    const db = readDB();
-    if (!db.otps) db.otps = [];
-    cleanupOtps(db);
-
-    // Verify OTP
-    const otpRecord = db.otps.find(o => o.email === email && o.code === otp);
-    if (!otpRecord) {
-      return res.status(400).json({ error: 'Invalid or expired OTP' });
-    }
-
-    const user = db.users.find(u => u.email === email);
-    if (!user) {
+    const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (userResult.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    const user = userResult.rows[0];
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Update streak
+    // Update streak logic
     const today = new Date().toISOString().split('T')[0];
+    const userLastActiveTimestamp = user.last_active_date ? new Date(user.last_active_date) : new Date();
+    const userLastActiveStr = userLastActiveTimestamp.toISOString().split('T')[0];
     const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    if (user.lastActiveDate === yesterday) {
-      user.streak += 1;
-    } else if (user.lastActiveDate !== today) {
-      user.streak = 1;
-    }
-    user.lastActiveDate = today;
     
-    // Clean up used OTP
-    db.otps = db.otps.filter(o => o.email !== email);
-    writeDB(db);
+    let newStreak = user.streak;
+    if (userLastActiveStr === yesterday) {
+      newStreak += 1;
+    } else if (userLastActiveStr !== today) {
+      newStreak = 1;
+    }
+
+    await pool.query(
+      'UPDATE users SET streak = $1, last_active_date = CURRENT_DATE WHERE id = $2',
+      [newStreak, user.id]
+    );
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
     const { password: _, ...userWithoutPassword } = user;
-    res.json({ token, user: userWithoutPassword });
+    
+    userWithoutPassword.streak = newStreak;
+    
+    // Map snake_case to camelCase
+    const uiUser = { ...userWithoutPassword, lastActiveDate: user.last_active_date, createdAt: user.created_at };
+    delete uiUser.last_active_date;
+    delete uiUser.created_at;
+
+    res.json({ token, user: uiUser });
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // GET /api/auth/me
-router.get('/me', require('../middleware/auth').authenticateToken, (req, res) => {
-  const db = readDB();
-  const user = db.users.find(u => u.id === req.user.id);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  const { password: _, ...userWithoutPassword } = user;
-  res.json(userWithoutPassword);
+router.get('/me', require('../middleware/auth').authenticateToken, async (req, res) => {
+  try {
+    const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [req.user.id]);
+    if (userResult.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    
+    const user = userResult.rows[0];
+    const { password: _, ...userWithoutPassword } = user;
+    
+    // Map snake_case to camelCase
+    const uiUser = { ...userWithoutPassword, lastActiveDate: user.last_active_date, createdAt: user.created_at };
+    delete uiUser.last_active_date;
+    delete uiUser.created_at;
+
+    res.json(uiUser);
+  } catch (err) {
+    console.error('Me error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 module.exports = router;

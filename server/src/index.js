@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
@@ -35,11 +36,15 @@ app.use('/api/panic', panicRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationsRoutes);
 
+const { initDB } = require('./database');
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ FocusFlow server running on http://localhost:${PORT}`);
-});
+initDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`✅ FocusFlow server running on http://localhost:${PORT}`);
+  });
+}).catch(console.error);

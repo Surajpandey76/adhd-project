@@ -33,11 +33,11 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const login = async (email, password, otp) => {
+  const login = async (email, password) => {
     const res = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, otp }),
+      body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);

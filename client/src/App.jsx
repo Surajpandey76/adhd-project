@@ -13,6 +13,7 @@ import PanicMode from './pages/PanicMode';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminLogin from './pages/AdminLogin';
 import { useEffect } from 'react';
 
 function ProtectedLayout() {
@@ -97,6 +98,7 @@ function AppRoot() {
     <Routes>
       <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Onboarding />} />
       <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/*" element={<ProtectedLayout />} />
     </Routes>
   );

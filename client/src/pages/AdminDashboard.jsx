@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Activity, Bell, Shield, ArrowLeft } from 'lucide-react';
+import { Users, Activity, Bell, Shield, ArrowLeft, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,19 +13,29 @@ export default function AdminDashboard() {
   const [notifyState, setNotifyState] = useState({ id: null, status: '' });
   
   const navigate = useNavigate();
-  const { token } = useAuth(); // Assume admin uses their normal token for simplicity in this prototype
+  // Fetch specific admin token
+  const adminToken = localStorage.getItem('focusflow_admin_token');
 
   useEffect(() => {
+    if (!adminToken) {
+      navigate('/admin/login');
+      return;
+    }
     fetchUsers();
-  }, []);
+  }, [adminToken, navigate]);
 
   const fetchUsers = async () => {
     try {
       const res = await fetch(`${API}/admin/users`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${adminToken}`
         }
       });
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('focusflow_admin_token');
+        navigate('/admin/login');
+        return;
+      }
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
       setUsers(data);
@@ -43,16 +53,44 @@ export default function AdminDashboard() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${adminToken}`
         },
         body: JSON.stringify({ userId, message: 'Time to focus! Let\'s get back to work. ⚡' })
       });
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('focusflow_admin_token');
+        navigate('/admin/login');
+        return;
+      }
       if (!res.ok) throw new Error('User offline or error');
       setNotifyState({ id: userId, status: 'success' });
       setTimeout(() => setNotifyState({ id: null, status: '' }), 3000);
     } catch (err) {
       setNotifyState({ id: userId, status: 'error' });
       setTimeout(() => setNotifyState({ id: null, status: '' }), 3000);
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) return;
+    
+    try {
+      const res = await fetch(`${API}/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`
+        }
+      });
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem('focusflow_admin_token');
+        navigate('/admin/login');
+        return;
+      }
+      if (!res.ok) throw new Error('Failed to delete user');
+      
+      setUsers(users.filter(u => u.id !== userId));
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -114,8 +152,17 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.1)', padding: '4px 8px', borderRadius: 8, fontSize: '0.8rem', fontWeight: 600 }}>
-                Lvl {user.level}
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '4px 8px', borderRadius: 8, fontSize: '0.8rem', fontWeight: 600 }}>
+                  Lvl {user.level}
+                </div>
+                <button 
+                  onClick={() => deleteUser(user.id)}
+                  style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', padding: 6, borderRadius: 8, cursor: 'pointer', display: 'flex' }}
+                  title="Delete User"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             </div>
 
