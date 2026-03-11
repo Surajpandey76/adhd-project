@@ -6,6 +6,7 @@ import {
   Users, AlertTriangle, User, Settings, LogOut, Menu, X,
   Flame, Coins, Zap
 } from 'lucide-react';
+import adhdLogo from '../assets/adhd-logo.png';
 
 const NAV_ITEMS = [
   { section: 'Main' },
@@ -44,7 +45,7 @@ export default function Sidebar() {
 
       <aside className={`sidebar ${open ? 'open' : ''}`}>
         <div className="sidebar-logo">
-          <div className="logo-icon">⚡</div>
+          <img src={adhdLogo} alt="ADHD FocusFlow" className="logo-image" />
           <h1>FocusFlow</h1>
           <button onClick={() => setOpen(false)}
             style={{

@@ -33,10 +33,10 @@
       "password": "$2b$10$Ygv8zzLw1EJRkPY3nPadAOCsgUBH3r/JptadJ8zrz9SMCGlkVp/hC",
       "xp": 0,
       "coins": 0,
-      "streak": 0,
+      "streak": 1,
       "level": 1,
       "avatar": "default",
-      "lastActiveDate": "2026-03-10",
+      "lastActiveDate": "2026-03-11",
       "createdAt": "2026-03-10T10:10:58.963Z"
     },
     {
@@ -44,8 +44,8 @@
       "name": "Suraj",
       "email": "suraj1@gmail.com",
       "password": "$2b$10$9oHwkLTXhLHRyNKs6lba5ee6e.d66tG7zFX/T4TtEpMnYlY6wLmuy",
-      "xp": 0,
-      "coins": 0,
+      "xp": 75,
+      "coins": 30,
       "streak": 0,
       "level": 1,
       "avatar": "default",
@@ -67,6 +67,13 @@
       "goal": "prepare my software engineering interview",
       "status": "active",
       "createdAt": "2026-03-10T09:10:57.273Z"
+    },
+    {
+      "id": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "userId": "fafd1f8f-7256-4ef3-91ef-3d12439978eb",
+      "goal": "loose 20 kgs in 1.5 months with diet and workout plan",
+      "status": "active",
+      "createdAt": "2026-03-10T12:20:47.713Z"
     }
   ],
   "subtasks": [
@@ -209,6 +216,62 @@
       "title": "Set an alarm for interview day with 30 min buffer",
       "status": "pending",
       "order": 10
+    },
+    {
+      "id": "a24859fc-61d4-4231-a338-6a2b0c4d673a",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Put on workout clothes and shoes",
+      "status": "completed",
+      "order": 1
+    },
+    {
+      "id": "c112f93a-e18e-48d3-857a-44e244ceb869",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Fill a water bottle",
+      "status": "completed",
+      "order": 2
+    },
+    {
+      "id": "78f1425a-d9d5-402f-bf85-e58946fb280b",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Do 2 minutes of light stretching",
+      "status": "completed",
+      "order": 3
+    },
+    {
+      "id": "23311943-7ec4-4252-9880-be6be7ef8f3a",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Start with a 5-minute warm-up walk or jog",
+      "status": "pending",
+      "order": 4
+    },
+    {
+      "id": "0260ca01-e777-4177-ba0e-081fff9aeb1a",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Do your main workout for 15-20 minutes",
+      "status": "pending",
+      "order": 5
+    },
+    {
+      "id": "9c78a9c9-b69c-4c30-b3df-ce4425946c26",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Cool down with 5 minutes of walking",
+      "status": "pending",
+      "order": 6
+    },
+    {
+      "id": "b57fdc17-627f-48fd-b868-f58fea99e5d1",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Stretch for 3 minutes",
+      "status": "pending",
+      "order": 7
+    },
+    {
+      "id": "d2cc31de-4a3d-47dd-89f3-cbe5b9848930",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "title": "Drink water and log your workout",
+      "status": "pending",
+      "order": 8
     }
   ],
   "focusSessions": [
@@ -219,7 +282,40 @@
       "startedAt": "2026-03-10T09:11:01.493Z",
       "duration": 0,
       "completed": false
+    },
+    {
+      "id": "ae5d8b7b-5167-4324-951d-1c652cbd986e",
+      "userId": "fafd1f8f-7256-4ef3-91ef-3d12439978eb",
+      "taskId": "eb27c22c-181a-426c-992b-e1b1af1321be",
+      "startedAt": "2026-03-10T12:20:55.638Z",
+      "duration": 0,
+      "completed": false
     }
   ],
-  "rewards": []
+  "rewards": [
+    {
+      "id": "470107e8-7e3c-4e2c-8f31-a8342b97627b",
+      "userId": "fafd1f8f-7256-4ef3-91ef-3d12439978eb",
+      "xp": 25,
+      "coins": 10,
+      "source": "subtask_complete",
+      "createdAt": "2026-03-10T12:20:58.442Z"
+    },
+    {
+      "id": "7f71946c-c62c-499a-b5b5-15fe6e5a99c1",
+      "userId": "fafd1f8f-7256-4ef3-91ef-3d12439978eb",
+      "xp": 25,
+      "coins": 10,
+      "source": "subtask_complete",
+      "createdAt": "2026-03-10T12:21:09.769Z"
+    },
+    {
+      "id": "ef9b8921-17b2-4827-80e9-f0f5dfa1350d",
+      "userId": "fafd1f8f-7256-4ef3-91ef-3d12439978eb",
+      "xp": 25,
+      "coins": 10,
+      "source": "subtask_complete",
+      "createdAt": "2026-03-10T12:21:17.420Z"
+    }
+  ]
 }
