@@ -8,6 +8,8 @@ const taskRoutes = require('./routes/tasks');
 const aiRoutes = require('./routes/ai');
 const focusRoutes = require('./routes/focus');
 const panicRoutes = require('./routes/panic');
+const adminRoutes = require('./routes/admin');
+const { router: notificationsRoutes } = require('./routes/notifications');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,6 +32,8 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/focus', focusRoutes);
 app.use('/api/panic', panicRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

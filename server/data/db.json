@@ -51,6 +51,32 @@
       "avatar": "default",
       "lastActiveDate": "2026-03-10",
       "createdAt": "2026-03-10T10:24:08.823Z"
+    },
+    {
+      "id": "77175c2e-171f-4853-8f04-a1d918707af4",
+      "name": "suraj",
+      "email": "surajbhardwaj958@gmail.com",
+      "password": "$2b$10$Kzy.fgD838rYrCotGlO0SOAkPXrdz7pBBdChOtk00KNAGklMZql9K",
+      "xp": 0,
+      "coins": 0,
+      "streak": 0,
+      "level": 1,
+      "avatar": "default",
+      "lastActiveDate": "2026-03-11",
+      "createdAt": "2026-03-11T07:14:42.126Z"
+    },
+    {
+      "id": "8edcd6fc-d5a9-45c7-94ba-cbc105cb9a7f",
+      "name": "BrowserTest",
+      "email": "testadmin@example.com",
+      "password": "$2b$10$y/hj9OO0hciKHZV4LKi32eIns4DEulIRfZnb4KPYV2K6UprmWXZl2",
+      "xp": 0,
+      "coins": 0,
+      "streak": 0,
+      "level": 1,
+      "avatar": "default",
+      "lastActiveDate": "2026-03-11",
+      "createdAt": "2026-03-11T07:19:10.839Z"
     }
   ],
   "tasks": [
@@ -316,6 +342,18 @@
       "coins": 10,
       "source": "subtask_complete",
       "createdAt": "2026-03-10T12:21:17.420Z"
+    }
+  ],
+  "otps": [
+    {
+      "email": "surajpandey1909@gmail.com",
+      "code": "346881",
+      "expiresAt": 1773213742978
+    },
+    {
+      "email": "suraj1@gmail.com",
+      "code": "679998",
+      "expiresAt": 1773213787081
     }
   ]
 }

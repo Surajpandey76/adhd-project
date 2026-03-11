@@ -22,11 +22,22 @@ export function AuthProvider({ children }) {
     }
   }, [token]);
 
-  const login = async (email, password) => {
+  const sendOtp = async (email) => {
+    const res = await fetch(`${API}/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    return data;
+  };
+
+  const login = async (email, password, otp) => {
     const res = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, otp }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
@@ -36,11 +47,11 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, otp) => {
     const res = await fetch(`${API}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, otp }),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
@@ -73,7 +84,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateUser, authFetch }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateUser, authFetch, sendOtp }}>
       {children}
     </AuthContext.Provider>
   );

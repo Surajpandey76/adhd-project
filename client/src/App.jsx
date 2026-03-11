@@ -12,9 +12,35 @@ import FocusRooms from './pages/FocusRooms';
 import PanicMode from './pages/PanicMode';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import AdminDashboard from './pages/AdminDashboard';
+import { useEffect } from 'react';
 
 function ProtectedLayout() {
-  const { user, loading } = useAuth();
+  const { user, loading, token } = useAuth();
+  
+  // SSE Setup for real-time notifications
+  useEffect(() => {
+    if (!token) return;
+    
+    const eventSource = new EventSource(`http://localhost:5000/api/notifications/stream?token=${token}`);
+    
+    eventSource.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        if (data.type === 'focus_reminder') {
+          // Play a sound and show an alert
+          // Standard browser alert for prototype simplicity, could be replaced by global toast
+          alert(`🔔 Focus Reminder from Admin: ${data.message}`);
+        }
+      } catch (err) {
+        console.error('SSE Error processing message', err);
+      }
+    };
+    
+    return () => {
+      eventSource.close();
+    };
+  }, [token]);
 
   if (loading) {
     return (
@@ -70,6 +96,7 @@ function AppRoot() {
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Onboarding />} />
+      <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/*" element={<ProtectedLayout />} />
     </Routes>
   );

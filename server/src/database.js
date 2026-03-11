@@ -11,6 +11,7 @@ function getDefaultDB() {
     subtasks: [],
     focusSessions: [],
     rewards: [],
+    otps: [],
   };
 }
 

@@ -223,13 +223,14 @@ function useMouseLight(ref) {
 export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [mode, setMode] = useState('onboarding'); // onboarding | auth
-  const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', otp: '' });
   const [isLogin, setIsLogin] = useState(false);
+  const [otpStep, setOtpStep] = useState(false);
   const [error, setError] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, sendOtp } = useAuth();
   const containerRef = useRef(null);
 
   useMouseLight(containerRef);
@@ -239,13 +240,18 @@ export default function Onboarding() {
     setError('');
     setLoading(true);
     try {
-      if (isLogin) {
-        await login(form.email, form.password);
+      if (!otpStep) {
+        if (!isLogin && !form.name.trim()) { setError('Name is required'); setLoading(false); return; }
+        await sendOtp(form.email);
+        setOtpStep(true);
       } else {
-        if (!form.name.trim()) { setError('Name is required'); setLoading(false); return; }
-        await register(form.name, form.email, form.password);
+        if (isLogin) {
+          await login(form.email, form.password, form.otp);
+        } else {
+          await register(form.name, form.email, form.password, form.otp);
+        }
+        navigate('/dashboard');
       }
-      navigate('/dashboard');
     } catch (err) {
       setError(err.message);
     }
@@ -296,10 +302,10 @@ export default function Onboarding() {
                 transform: 'perspective(500px) rotateX(5deg)',
               }}>⚡</motion.div>
             <h1 style={{ fontSize: '1.6rem', fontWeight: 700, marginBottom: 4 }}>
-              {isLogin ? 'Welcome back' : 'Create your account'}
+              {otpStep ? 'Verify your email' : (isLogin ? 'Welcome back' : 'Create your account')}
             </h1>
             <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.9rem' }}>
-              {isLogin ? 'Let\'s keep the momentum going 💜' : 'Start your focus journey today ✨'}
+              {otpStep ? `Enter the 6-digit code sent to ${form.email}` : (isLogin ? 'Let\'s keep the momentum going 💜' : 'Start your focus journey today ✨')}
             </p>
           </div>
 
@@ -312,33 +318,46 @@ export default function Onboarding() {
             padding: 28,
             boxShadow: '0 8px 40px rgba(192,132,252,0.1), inset 0 1px 0 rgba(255,255,255,0.5)',
           }}>
-            {!isLogin && (
+            {!otpStep && !isLogin && (
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Name</label>
                 <input className="input" placeholder="Your name" value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })} />
               </div>
             )}
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Email</label>
-              <input className="input" type="email" placeholder="you@example.com" value={form.email}
-                onChange={e => setForm({ ...form, email: e.target.value })} required />
-            </div>
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Password</label>
-              <div style={{ position: 'relative' }}>
-                <input className="input" type={showPw ? 'text' : 'password'} placeholder="••••••••"
-                  value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
-                  required minLength={6} style={{ paddingRight: 44 }} />
-                <button type="button" onClick={() => setShowPw(!showPw)}
-                  style={{
-                    position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
-                    background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)',
-                  }}>
-                  {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
+            {!otpStep && (
+              <>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Email</label>
+                  <input className="input" type="email" placeholder="you@example.com" value={form.email}
+                    onChange={e => setForm({ ...form, email: e.target.value })} required />
+                </div>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Password</label>
+                  <div style={{ position: 'relative' }}>
+                    <input className="input" type={showPw ? 'text' : 'password'} placeholder="••••••••"
+                      value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
+                      required minLength={6} style={{ paddingRight: 44 }} />
+                    <button type="button" onClick={() => setShowPw(!showPw)}
+                      style={{
+                        position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
+                        background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-muted)',
+                      }}>
+                      {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {otpStep && (
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Verification Code</label>
+                <input className="input" type="text" placeholder="123456" value={form.otp}
+                  onChange={e => setForm({ ...form, otp: e.target.value })} required minLength={6} maxLength={6}
+                  style={{ textAlign: 'center', letterSpacing: '0.5em', fontSize: '1.2rem' }} />
               </div>
-            </div>
+            )}
 
             {error && (
               <div style={{
@@ -350,19 +369,32 @@ export default function Onboarding() {
 
             <button className="btn btn-primary btn-lg" type="submit"
               style={{ width: '100%' }} disabled={loading}>
-              {loading ? 'Please wait...' : (isLogin ? 'Log in' : 'Create account')}
+              {loading ? 'Please wait...' : (otpStep ? 'Verify & Continue' : (isLogin ? 'Log in' : 'Create account'))}
             </button>
 
-            <p style={{ textAlign: 'center', marginTop: 16, fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
-              {isLogin ? 'Don\'t have an account? ' : 'Already have an account? '}
-              <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); }}
-                style={{
-                  background: 'none', border: 'none', color: 'var(--color-primary)',
-                  fontWeight: 600, cursor: 'pointer',
-                }}>
-                {isLogin ? 'Sign up' : 'Log in'}
-              </button>
-            </p>
+            {!otpStep && (
+              <p style={{ textAlign: 'center', marginTop: 16, fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
+                {isLogin ? 'Don\'t have an account? ' : 'Already have an account? '}
+                <button type="button" onClick={() => { setIsLogin(!isLogin); setError(''); }}
+                  style={{
+                    background: 'none', border: 'none', color: 'var(--color-primary)',
+                    fontWeight: 600, cursor: 'pointer',
+                  }}>
+                  {isLogin ? 'Sign up' : 'Log in'}
+                </button>
+              </p>
+            )}
+            {otpStep && (
+              <p style={{ textAlign: 'center', marginTop: 16, fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>
+                <button type="button" onClick={() => { setOtpStep(false); setError(''); }}
+                  style={{
+                    background: 'none', border: 'none', color: 'var(--color-primary)',
+                    fontWeight: 600, cursor: 'pointer',
+                  }}>
+                  ← Back to login
+                </button>
+              </p>
+            )}
           </form>
         </motion.div>
       </div>
