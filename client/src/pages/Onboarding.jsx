@@ -263,6 +263,15 @@ export default function Onboarding() {
       } else {
         if (!otpStep) {
           if (!form.name.trim()) { setError('Name is required'); setLoading(false); return; }
+          
+          // Password validation: min 8 chars, alphanumeric mandatory
+          const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+          if (!pwRegex.test(form.password)) {
+            setError('Password must be at least 8 characters and include both letters and numbers.');
+            setLoading(false);
+            return;
+          }
+
           await sendOtp(form.email);
           setOtpStep(true);
         } else {
@@ -355,8 +364,11 @@ export default function Onboarding() {
                   <label style={{ fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: 6 }}>Password</label>
                   <div style={{ position: 'relative' }}>
                     <input className="input" type={showPw ? 'text' : 'password'} placeholder="••••••••"
-                      value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
-                      required minLength={6} style={{ paddingRight: 44 }} />
+                      value={form.password} onChange={e => {
+                        const val = e.target.value;
+                        setForm({ ...form, password: val });
+                      }}
+                      required style={{ paddingRight: 44 }} />
                     <button type="button" onClick={() => setShowPw(!showPw)}
                       style={{
                         position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)',
@@ -365,6 +377,28 @@ export default function Onboarding() {
                       {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
+                  {!isLogin && !otpStep && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ 
+                        height: (!form.password || /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(form.password)) ? 0 : 'auto',
+                        opacity: (!form.password || /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/.test(form.password)) ? 0 : 1
+                      }}
+                      style={{ overflow: 'hidden' }}
+                    >
+                      <p style={{ 
+                        fontSize: '0.75rem', 
+                        color: 'var(--color-primary)', 
+                        marginTop: 8,
+                        fontWeight: 500,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4
+                      }}>
+                        <span style={{ fontSize: '1rem' }}>✨</span> Min. 8 characters with letters & numbers
+                      </p>
+                    </motion.div>
+                  )}
                 </div>
               </>
             )}

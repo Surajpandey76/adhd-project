@@ -57,6 +57,12 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Name, email, password, and OTP are required' });
     }
 
+    // Password validation: min 8 chars, alphanumeric mandatory
+    const pwRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+    if (!pwRegex.test(password)) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters and include both letters and numbers.' });
+    }
+
     await cleanupOtps();
 
     // Verify OTP
