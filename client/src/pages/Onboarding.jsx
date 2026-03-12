@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { API } from '../config';
 
 /* ─── Decorative 3D Stickers ─── */
 const STICKERS = [
@@ -242,14 +243,14 @@ export default function Onboarding() {
     try {
       // Intercept admin login on the client login page
       if (isLogin && form.email === 'support.focusflow@gmail.com') {
-        const res = await fetch('http://localhost:5000/api/admin/login', {
+        const res = await fetch(`${API}/admin/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: form.email, password: form.password })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
-        localStorage.setItem('focusflow_admin_token', data.token);
+        localStorage.setItem('dopely_admin_token', data.token);
         navigate('/admin');
         setLoading(false);
         return;

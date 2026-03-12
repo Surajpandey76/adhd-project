@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminLogin from './pages/AdminLogin';
+import { API } from './config';
 import { useEffect } from 'react';
 
 function ProtectedLayout() {
@@ -23,7 +24,7 @@ function ProtectedLayout() {
   useEffect(() => {
     if (!token) return;
     
-    const eventSource = new EventSource(`http://localhost:5000/api/notifications/stream?token=${token}`);
+    const eventSource = new EventSource(`${API}/notifications/stream?token=${token}`);
     
     eventSource.onmessage = (e) => {
       try {

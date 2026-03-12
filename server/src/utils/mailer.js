@@ -17,13 +17,13 @@ console.log('✅ Mailer initialized with Gmail');
 async function sendEmail(to, subject, text, html) {
   try {
     const info = await transporter.sendMail({
-      from: '"FocusFlow Support" <support.focuflow@gmail.com>',
+      from: '"Dopely Support" <support.focusflow@gmail.com>',
       to,
       subject,
       text,
       html,
     });
-    
+
     console.log('Message sent: %s', info.messageId);
     return info;
   } catch (error) {

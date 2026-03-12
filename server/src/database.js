@@ -67,7 +67,6 @@ async function initDB() {
     `);
 
     // Focus Sessions table
-    await client.query(`DROP TABLE IF EXISTS focus_sessions CASCADE;`);
     await client.query(`
       CREATE TABLE IF NOT EXISTS focus_sessions (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Eye, EyeOff } from 'lucide-react';
-
-const API = 'http://localhost:5000/api';
+import { API } from '../config';
 
 export default function AdminLogin() {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -31,7 +30,7 @@ export default function AdminLogin() {
       if (!res.ok) throw new Error(data.error);
 
       // Store the admin token specifically, not the normal token
-      localStorage.setItem('focusflow_admin_token', data.token);
+      localStorage.setItem('dopely_admin_token', data.token);
       navigate('/admin');
     } catch (err) {
       setError(err.message);

@@ -6,7 +6,7 @@ import {
   Users, AlertTriangle, User, Settings, LogOut, Menu, X,
   Flame, Coins, Zap
 } from 'lucide-react';
-import adhdLogo from '../assets/adhd-logo.png';
+import dopelyLogo from '../assets/adhd-logo.png';
 
 const NAV_ITEMS = [
   { section: 'Main' },
@@ -45,8 +45,17 @@ export default function Sidebar() {
 
       <aside className={`sidebar ${open ? 'open' : ''}`}>
         <div className="sidebar-logo">
-          <img src={adhdLogo} alt="ADHD FocusFlow" className="logo-image" />
-          <h1>FocusFlow</h1>
+          <img src={dopelyLogo} alt="Dopely" style={{ width: 64, height: 64, objectFit: 'contain' }} />
+          <h1 style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: '1.6rem',
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #c026d3, #a855f7, #7c3aed)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.02em',
+            filter: 'drop-shadow(0 2px 4px rgba(192, 132, 252, 0.2))'
+          }}>Dopely</h1>
           <button onClick={() => setOpen(false)}
             style={{
               marginLeft: 'auto', display: open ? 'flex' : 'none',

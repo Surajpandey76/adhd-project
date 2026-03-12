@@ -64,7 +64,7 @@ export default function Settings() {
 
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="section-title">Settings ⚙️</h1>
-        <p className="section-subtitle">Customize your FocusFlow experience. 💜</p>
+        <p className="section-subtitle">Customize your Dopely experience. 💜</p>
 
         <div className="card card-glass" style={{ marginBottom: 20 }}>
           <h3 style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--color-text-muted)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Appearance</h3>
@@ -100,7 +100,7 @@ export default function Settings() {
         </div>
 
         <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>
-          FocusFlow v1.0 — Made with 💜 for ADHD brains
+          Dopely v1.0 — Made with 💜 for ADHD brains
         </div>
       </motion.div>
     </div>

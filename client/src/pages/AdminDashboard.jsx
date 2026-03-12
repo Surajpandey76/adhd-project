@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, Activity, Bell, Shield, ArrowLeft, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
-const API = 'http://localhost:5000/api';
+import { API } from '../config';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -14,7 +13,7 @@ export default function AdminDashboard() {
   
   const navigate = useNavigate();
   // Fetch specific admin token
-  const adminToken = localStorage.getItem('focusflow_admin_token');
+  const adminToken = localStorage.getItem('dopely_admin_token');
 
   useEffect(() => {
     if (!adminToken) {
@@ -32,7 +31,7 @@ export default function AdminDashboard() {
         }
       });
       if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('focusflow_admin_token');
+        localStorage.removeItem('dopely_admin_token');
         navigate('/admin/login');
         return;
       }
@@ -58,7 +57,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({ userId, message: 'Time to focus! Let\'s get back to work. ⚡' })
       });
       if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('focusflow_admin_token');
+        localStorage.removeItem('dopely_admin_token');
         navigate('/admin/login');
         return;
       }
@@ -82,7 +81,7 @@ export default function AdminDashboard() {
         }
       });
       if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem('focusflow_admin_token');
+        localStorage.removeItem('dopely_admin_token');
         navigate('/admin/login');
         return;
       }

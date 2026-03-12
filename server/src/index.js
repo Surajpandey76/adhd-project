@@ -21,7 +21,7 @@ app.use(express.json());
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000, 
   max: 200,
   message: { error: 'Too many requests, please try again later.' },
 });
@@ -40,11 +40,20 @@ const { initDB } = require('./database');
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    hasDbUrl: !!process.env.DATABASE_URL
+  });
 });
 
-initDB().then(() => {
+// Initialize DB
+initDB().catch(err => console.error('Failed to init DB on load:', err));
+
+module.exports = app;
+
+if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`✅ FocusFlow server running on http://localhost:${PORT}`);
+    console.log(`✅ Dopely server running on http://localhost:${PORT}`);
   });
-}).catch(console.error);
+}

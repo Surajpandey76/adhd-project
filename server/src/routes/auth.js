@@ -35,9 +35,9 @@ router.post('/send-otp', async (req, res) => {
 
     await sendEmail(
       email,
-      'Your FocusFlow Verification Code',
+      'Your Dopely Verification Code',
       `Your code is: ${otpData}`,
-      `<h2>FocusFlow Verification</h2><p>Your OTP code is: <strong>${otpData}</strong></p><p>It will expire in 10 minutes.</p>`
+      `<h2>Dopely Verification</h2><p>Your OTP code is: <strong>${otpData}</strong></p><p>It will expire in 10 minutes.</p>`
     );
     
     console.log(`[OTP] Created OTP ${otpData} for ${email}`);

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'focusflow-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'dopely-secret-key-change-in-production';
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -12,7 +12,7 @@ const authenticateToken = (req, res, next) => {
 
   if (!token) return res.status(401).json({ error: 'Access denied' });
 
-  jwt.verify(token, process.env.JWT_SECRET || 'focusflow-secret-key-change-in-production', (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET || 'dopely-secret-key-change-in-production', (err, user) => {
     if (err) return res.status(403).json({ error: 'Invalid token' });
     req.user = user;
     next();

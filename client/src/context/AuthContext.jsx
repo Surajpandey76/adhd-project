@@ -1,12 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { API, API_BASE_URL } from '../config';
 
 const AuthContext = createContext(null);
 
-const API = '/api';
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('focusflow_token'));
+  const [token, setToken] = useState(localStorage.getItem('dopely_token'));
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +15,7 @@ export function AuthProvider({ children }) {
       })
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(data => { setUser(data); setLoading(false); })
-        .catch(() => { setToken(null); localStorage.removeItem('focusflow_token'); setLoading(false); });
+        .catch(() => { setToken(null); localStorage.removeItem('dopely_token'); setLoading(false); });
     } else {
       setLoading(false);
     }
@@ -41,7 +40,7 @@ export function AuthProvider({ children }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
-    localStorage.setItem('focusflow_token', data.token);
+    localStorage.setItem('dopely_token', data.token);
     setToken(data.token);
     setUser(data.user);
     return data;
@@ -55,14 +54,14 @@ export function AuthProvider({ children }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
-    localStorage.setItem('focusflow_token', data.token);
+    localStorage.setItem('dopely_token', data.token);
     setToken(data.token);
     setUser(data.user);
     return data;
   };
 
   const logout = () => {
-    localStorage.removeItem('focusflow_token');
+    localStorage.removeItem('dopely_token');
     setToken(null);
     setUser(null);
   };
@@ -72,7 +71,8 @@ export function AuthProvider({ children }) {
   };
 
   const authFetch = async (url, options = {}) => {
-    const res = await fetch(url, {
+    const fullUrl = url.startsWith('/api') ? `${API_BASE_URL}${url}` : url;
+    const res = await fetch(fullUrl, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
